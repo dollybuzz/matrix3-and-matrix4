@@ -1,4 +1,5 @@
-/*
+/* 
+ * Dalia Faria and Gregory Brown
  * An object representing a 3x3 matrix
  */
 

@@ -1,4 +1,5 @@
 /*
+ * Dalia Faria and Gregory Brown
  * An object representing a 4x4 matrix
  */
 
@@ -342,17 +343,17 @@ var Matrix4 = function(x, y, z) {
 		// todo - combine translation and rotation into a single matrix and return it
 		var earthMatrix = new Matrix4();
 
-		var earthRotate = new Matrix4();
+		//cloning matrix to set rotation
+		var earthRotate = new Matrix4(); 
 		earthRotate = earthMatrix.clone();
 		earthRotate.setRotationZ(currentRotationAngle);
 
+		//applying translation
 		var earthTranslate = new Matrix4();
 		earthTranslate = earthMatrix.setTranslation(startingPosition);
 
-		var altEarthMatrix = new Matrix4();
-		altEarthMatrix = earthRotate.multiplyRightSide(earthTranslate);
-
-		earthMatrix = altEarthMatrix;
+		//combine translation and rotation into single matrix for earth
+		earthMatrix = earthRotate.multiplyRightSide(earthTranslate);
 
 		return earthMatrix;
 	 };
@@ -363,19 +364,23 @@ var Matrix4 = function(x, y, z) {
     //        by offsetFromEarth and rotates around the earth (y-axis)
     //        by currentRotationAngle degrees
 	// todo - combine all necessary matrices necessary to achieve the desired effect
-	var moonMatrix = new Matrix4();
+		var moonMatrix = new Matrix4();
 
+		//cloning matrix to set rotation
 		var moonRotate = new Matrix4();
 		moonRotate = moonMatrix.clone();
 		moonRotate.setRotationZ(currentRotationAngle);
 
+		//applying translation
 		var moonTranslate = new Matrix4();
 		moonTranslate = moonMatrix.setTranslation(offsetFromEarth);
 
-		var altMoonMatrix = new Matrix4();
-		altMoonMatrix = moonRotate.multiplyRightSide(moonTranslate);
+		//combine translation and rotation into single matrix for moon
+		var newMoonMatrix = new Matrix4();
+		newMoonMatrix = moonRotate.multiplyRightSide(moonTranslate);
 
-		moonMatrix = earthTransform.multiplyRightSide(altMoonMatrix);
+		//combine new moon's matrix to earth transformation
+		moonMatrix = earthTransform.multiplyRightSide(newMoonMatrix);
 
     return moonMatrix;
   }
