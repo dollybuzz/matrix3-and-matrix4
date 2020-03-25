@@ -339,13 +339,21 @@ var Matrix4 = function(x, y, z) {
 	this.test_createEarthMatrix = function(currentRotationAngle, startingPosition) {
 		// todo - create a matrix that translates to startingPosition and rotates
 		//        in the z-axis by currentRotationAngle degrees
-		
-		var earthMatrix = new Matrix4();
-		var vector = new Vector4(startingPosition.x, startingPosition.y, startingPosition.z, 0);
 		// todo - combine translation and rotation into a single matrix and return it
-		earthMatrix.setRotationZ(currentRotationAngle);
-		vector = earthMatrix.multiplyVector(vector);
-		earthMatrix.translate(vector.x, vector.y, vector.z);
+		var earthMatrix = new Matrix4();
+
+		var earthRotate = new Matrix4();
+		earthRotate = earthMatrix.clone();
+		earthRotate.setRotationZ(currentRotationAngle);
+
+		var earthTranslate = new Matrix4();
+		earthTranslate = earthMatrix.setTranslation(startingPosition);
+
+		var altEarthMatrix = new Matrix4();
+		altEarthMatrix = earthRotate.multiplyRightSide(earthTranslate);
+
+		earthMatrix = altEarthMatrix;
+
 		return earthMatrix;
 	 };
 
@@ -354,9 +362,20 @@ var Matrix4 = function(x, y, z) {
     // todo - create a matrix that translates to a position relative to the earth
     //        by offsetFromEarth and rotates around the earth (y-axis)
     //        by currentRotationAngle degrees
-    var moonMatrix = new Matrix4();
+	// todo - combine all necessary matrices necessary to achieve the desired effect
+	var moonMatrix = new Matrix4();
 
-    // todo - combine all necessary matrices necessary to achieve the desired effect
+		var moonRotate = new Matrix4();
+		moonRotate = moonMatrix.clone();
+		moonRotate.setRotationZ(currentRotationAngle);
+
+		var moonTranslate = new Matrix4();
+		moonTranslate = moonMatrix.setTranslation(offsetFromEarth);
+
+		var altMoonMatrix = new Matrix4();
+		altMoonMatrix = moonRotate.multiplyRightSide(moonTranslate);
+
+		moonMatrix = earthTransform.multiplyRightSide(altMoonMatrix);
 
     return moonMatrix;
   }
